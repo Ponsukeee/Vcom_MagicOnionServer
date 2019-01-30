@@ -1,0 +1,11 @@
+C:\Vagrant\MagicOnion\Hello\bin\Release\netcoreapp2.0\Hello.deps.json
+C:\Vagrant\MagicOnion\Hello\bin\Release\netcoreapp2.0\Hello.runtimeconfig.json
+C:\Vagrant\MagicOnion\Hello\bin\Release\netcoreapp2.0\Hello.runtimeconfig.dev.json
+C:\Vagrant\MagicOnion\Hello\bin\Release\netcoreapp2.0\Hello.dll
+C:\Vagrant\MagicOnion\Hello\bin\Release\netcoreapp2.0\Hello.pdb
+C:\Vagrant\MagicOnion\Hello\obj\Release\netcoreapp2.0\Hello.csprojAssemblyReference.cache
+C:\Vagrant\MagicOnion\Hello\obj\Release\netcoreapp2.0\Hello.csproj.CoreCompileInputs.cache
+C:\Vagrant\MagicOnion\Hello\obj\Release\netcoreapp2.0\Hello.AssemblyInfoInputs.cache
+C:\Vagrant\MagicOnion\Hello\obj\Release\netcoreapp2.0\Hello.AssemblyInfo.cs
+C:\Vagrant\MagicOnion\Hello\obj\Release\netcoreapp2.0\Hello.dll
+C:\Vagrant\MagicOnion\Hello\obj\Release\netcoreapp2.0\Hello.pdb
