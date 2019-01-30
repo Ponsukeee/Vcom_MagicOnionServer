@@ -11,6 +11,4 @@
     <PackageReference Include="MessagePack.UnityShims" Version="1.7.3.4" />
   </ItemGroup>
 
-  <Import Project="..\MagicOnion.Shared\MagicOnion.Shared.projitems" Label="Shared" />
-
 </Project>
