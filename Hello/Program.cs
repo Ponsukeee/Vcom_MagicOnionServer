@@ -22,7 +22,7 @@ namespace Hello
             var server = new global::Grpc.Core.Server(options)
             {
                 Services = { service },
-                Ports = { new ServerPort("10.128.0.16", 12345, ServerCredentials.Insecure) }
+                Ports = { new ServerPort("192.168.0.4", 12345, ServerCredentials.Insecure) }
             };
 
             // MagicOnion起動

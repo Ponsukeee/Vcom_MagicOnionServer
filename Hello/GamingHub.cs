@@ -42,6 +42,11 @@ namespace Hello
             BroadcastExceptSelf(room).OnMove(self);
         }
 
+        public async Task SpeakAsync(int index, float[] segment)
+        {
+            BroadcastExceptSelf(room).OnSpeak(index, segment);
+        }
+
         protected override ValueTask OnDisconnected()
         {
             //nop

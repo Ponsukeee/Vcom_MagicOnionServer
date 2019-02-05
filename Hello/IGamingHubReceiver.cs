@@ -9,5 +9,6 @@ namespace MagicOnion.Shared
         void OnJoin(Player player, byte[] avatarData);
         void OnLeave(Player player);
         void OnMove(Player player);
+        void OnSpeak(int index, float[] segment);
     }
 }
