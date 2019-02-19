@@ -1,14 +1,14 @@
-﻿using System.Threading.Tasks;
-using UnityEngine;
+﻿using MagicOnion;
+using System.Threading.Tasks;
 
-namespace MagicOnion.Shared
+public interface IGamingHub : IStreamingHub<IGamingHub, IGamingHubReceiver>
 {
-    public interface IGamingHub : IStreamingHub<IGamingHub, IGamingHubReceiver>
-    {
-        Task<PlayerInfo[]> JoinAsync(string roomName, string userName, Player player, byte[] avatarData);
-        Task LeaveAsync();
-        Task MoveAsync(Vector3 bodyPosition, Quaternion bodyRotation, Vector3 headPosition, Quaternion headRotation, Vector3 rightHandPosition, Quaternion rightHandRotation,
-            Vector3 leftHandPosition, Quaternion leftHandRotation);
-        Task SpeakAsync(int index, float[] segment);
-    }
+    Task<int> JoinAsync(string roomID, string userName);
+    Task LeaveAsync();
+    Task<PlayerInfo[]> GenerateAvatarAsync(AvatarTransform transform, byte[] avatarData);
+    Task<int> InstantiateAsync(string resourceName);
+    Task DestroyAsync(int id);
+    Task SynchronizeAvatarAsync(AvatarTransform transform);
+    Task MoveObjectAsync(int id, ObjectTransform transform);
+    Task SpeakAsync(int index, float[] segment);
 }

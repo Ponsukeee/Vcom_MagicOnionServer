@@ -1,45 +1,66 @@
 ﻿using MagicOnion.Server.Hubs;
-using MagicOnion.Shared;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Hello
 {
     public class GamingHub : StreamingHubBase<IGamingHub, IGamingHubReceiver>, IGamingHub
     {
-        IGroup room;
-        Player self;
-        PlayerInfo selfInfo;
-        IInMemoryStorage<PlayerInfo> storage;
+        private IGroup room;
+        private IInMemoryStorage<PlayerInfo> storage;
+        private int selfID;
+        private string selfName;
+        private AvatarTransform selfTransform;
+        private PlayerInfo selfInfo;
 
-        public async Task<PlayerInfo[]> JoinAsync(string roomName, string userName, Player player, byte[] avatarData)
+        public async Task<int> JoinAsync(string roomID, string userName)
         {
-            self = player;
-            selfInfo = new PlayerInfo(){ Player = player, AvatarData = avatarData };
-            (room, storage) = await this.Group.AddAsync(roomName, selfInfo);
-            BroadcastExceptSelf(room).OnJoin(self, avatarData);
+            (room, storage) = await this.Group.AddAsync(roomID, selfInfo);
+            selfID = RandomNumbers.NonDuplicateNumber();
+            selfName = userName;
+            var playerCount = await room.GetMemberCountAsync();
+            BroadcastExceptSelf(room).OnJoin(selfID, userName, playerCount);
 
-            return storage.AllValues.ToArray();
+            return selfID;
         }
 
         public async Task LeaveAsync()
         {
             await room.RemoveAsync(this.Context);
-            Broadcast(room).OnLeave(self);
+            var playerCount = await room.GetMemberCountAsync();
+            Broadcast(room).OnLeave(selfID, selfName, playerCount);
         }
 
-        public async Task MoveAsync(Vector3 bodyPosition, Quaternion bodyRotation, Vector3 headPosition, Quaternion headRotation, Vector3 rightHandPosition, Quaternion rightHandRotation, Vector3 leftHandPosition, Quaternion leftHandRotation)
+        public async Task<PlayerInfo[]> GenerateAvatarAsync(AvatarTransform transform, byte[] avatarData)
         {
-            self.BodyPosition = bodyPosition;
-            self.BodyRotation = bodyRotation;
-            self.HeadPosition = headPosition;
-            self.HeadRotation = headRotation;
-            self.RightHandPosition = rightHandPosition;
-            self.RightHandRotation = rightHandRotation;
-            self.LeftHandPosition = leftHandPosition;
-            self.LeftHandRotation = leftHandRotation;
-            BroadcastExceptSelf(room).OnMove(self);
+            selfTransform = transform;
+            selfInfo = new PlayerInfo() { ID = selfID, Name = selfName, Transform = selfTransform, AvatarData = avatarData };
+            BroadcastExceptSelf(room).OnGenerateAvatar(selfID, transform, avatarData);
+
+            return storage.AllValues.ToArray();
+        }
+
+        public async Task<int> InstantiateAsync(string resourceName)
+        {
+            int id = RandomNumbers.NonDuplicateNumber();
+            BroadcastExceptSelf(room).OnInstantiate(id, resourceName);
+            return id;
+        }
+
+        public async Task DestroyAsync(int id)
+        {
+            BroadcastExceptSelf(room).OnDestroy(id);
+        }
+
+        public async Task SynchronizeAvatarAsync(AvatarTransform transform)
+        {
+            selfTransform = transform;
+            BroadcastExceptSelf(room).OnSynchronizeAvatar(selfID, selfTransform);
+        }
+
+        public async Task MoveObjectAsync(int id, ObjectTransform transform)
+        {
+            BroadcastExceptSelf(room).OnMoveObject(id, transform);
         }
 
         public async Task SpeakAsync(int index, float[] segment)

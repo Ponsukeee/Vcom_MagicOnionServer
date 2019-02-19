@@ -8,6 +8,9 @@ namespace Hello
     {
         static void Main(string[] args)
         {
+            //
+            RandomNumbers.Initialize(1000000, 9999999, 5000000);
+
             //コンソールにログを表示させる
             GrpcEnvironment.SetLogger(new Grpc.Core.Logging.ConsoleLogger());
 
