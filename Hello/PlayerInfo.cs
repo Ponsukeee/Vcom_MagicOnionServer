@@ -11,4 +11,10 @@ public class PlayerInfo
     public AvatarTransform Transform;
     [Key(3)]
     public byte[] AvatarData;
+
+    public PlayerInfo(int id, string name)
+    {
+        ID = id;
+        Name = name;
+    }
 }

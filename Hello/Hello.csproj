@@ -9,6 +9,8 @@
     <PackageReference Include="MagicOnion" Version="2.0.3" />
     <PackageReference Include="MessagePack" Version="1.7.3.4" />
     <PackageReference Include="MessagePack.UnityShims" Version="1.7.3.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.519" />
   </ItemGroup>
 
 </Project>

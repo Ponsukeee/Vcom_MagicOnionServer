@@ -8,34 +8,38 @@ namespace Hello
     {
         private IGroup room;
         private IInMemoryStorage<PlayerInfo> storage;
-        private int selfID;
-        private string selfName;
-        private AvatarTransform selfTransform;
         private PlayerInfo selfInfo;
+        private string roomID;
 
-        public async Task<int> JoinAsync(string roomID, string userName)
+        public async Task<RoomInfo[]> GetRoomInfos()
         {
-            (room, storage) = await this.Group.AddAsync(roomID, selfInfo);
-            selfID = RandomNumbers.NonDuplicateNumber();
-            selfName = userName;
-            var playerCount = await room.GetMemberCountAsync();
-            BroadcastExceptSelf(room).OnJoin(selfID, userName, playerCount);
+            return await RedisClient.GetRoomInfos();
+        }
 
-            return selfID;
+        public async Task<int> JoinAsync(string userName)
+        {
+            selfInfo = new PlayerInfo(RandomNumbers.NonDuplicateNumber(), userName);
+            roomID = RandomNumbers.NonDuplicateNumber().ToString();
+            (room, storage) = await this.Group.AddAsync(roomID, selfInfo);
+            await RedisClient.CreateRoom(roomID, "test", userName, true);
+            var playerCount = await room.GetMemberCountAsync();
+            BroadcastExceptSelf(room).OnJoin(selfInfo.ID, userName, playerCount);
+
+            return selfInfo.ID;
         }
 
         public async Task LeaveAsync()
         {
             await room.RemoveAsync(this.Context);
             var playerCount = await room.GetMemberCountAsync();
-            Broadcast(room).OnLeave(selfID, selfName, playerCount);
+            Broadcast(room).OnLeave(selfInfo.ID, selfInfo.Name, playerCount);
         }
 
         public async Task<PlayerInfo[]> GenerateAvatarAsync(AvatarTransform transform, byte[] avatarData)
         {
-            selfTransform = transform;
-            selfInfo = new PlayerInfo() { ID = selfID, Name = selfName, Transform = selfTransform, AvatarData = avatarData };
-            BroadcastExceptSelf(room).OnGenerateAvatar(selfID, transform, avatarData);
+            selfInfo.Transform = transform;
+            selfInfo.AvatarData = avatarData;
+            BroadcastExceptSelf(room).OnGenerateAvatar(selfInfo.ID, transform, avatarData);
 
             return storage.AllValues.ToArray();
         }
@@ -54,8 +58,8 @@ namespace Hello
 
         public async Task SynchronizeAvatarAsync(AvatarTransform transform)
         {
-            selfTransform = transform;
-            BroadcastExceptSelf(room).OnSynchronizeAvatar(selfID, selfTransform);
+            selfInfo.Transform = transform;
+            BroadcastExceptSelf(room).OnSynchronizeAvatar(selfInfo.ID, selfInfo.Transform);
         }
 
         public async Task MoveObjectAsync(int id, ObjectTransform transform)

@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using MagicOnion.Server;
 using System;
+using StackExchange.Redis;
 
 namespace Hello
 {
@@ -8,8 +9,10 @@ namespace Hello
     {
         static void Main(string[] args)
         {
-            //
+            //id候補生成
             RandomNumbers.Initialize(1000000, 9999999, 5000000);
+
+            RedisClient.Connect();
 
             //コンソールにログを表示させる
             GrpcEnvironment.SetLogger(new Grpc.Core.Logging.ConsoleLogger());
@@ -25,7 +28,7 @@ namespace Hello
             var server = new global::Grpc.Core.Server(options)
             {
                 Services = { service },
-                Ports = { new ServerPort("192.168.0.4", 12345, ServerCredentials.Insecure) }
+                Ports = { new ServerPort("localhost", 12345, ServerCredentials.Insecure) }
             };
 
             // MagicOnion起動
