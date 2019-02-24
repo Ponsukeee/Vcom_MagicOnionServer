@@ -1,7 +1,8 @@
 ﻿public interface IGamingHubReceiver
 {
-    void OnJoin(int id, string playerName, int playerCount);
-    void OnLeave(int id, string userName, int playerCount);
+    void OnJoinRoom(int id, string playerName, int playerCount);
+    void OnLeaveRoom(int id, string userName, int playerCount);
+    void OnDestroyRoom(int id);
     void OnGenerateAvatar(int id, AvatarTransform player, byte[] avatarData);
     void OnInstantiate(int id, string resourceName);
     void OnDestroy(int id);

@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 public interface IGamingHub : IStreamingHub<IGamingHub, IGamingHubReceiver>
 {
     Task<RoomInfo[]> GetRoomInfos();
-    Task<int> JoinAsync(string userName);
-    Task LeaveAsync();
+    Task<int> JoinRoomAsync(string userName);
+    Task<int> JoinOtherRoomAsync(string userName, string roomID);
+    Task LeaveRoomAsync();
     Task<PlayerInfo[]> GenerateAvatarAsync(AvatarTransform transform, byte[] avatarData);
     Task<int> InstantiateAsync(string resourceName);
     Task DestroyAsync(int id);

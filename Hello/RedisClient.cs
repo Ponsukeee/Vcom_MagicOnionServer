@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 class RedisClient
 {
@@ -18,25 +18,29 @@ class RedisClient
 
     public async static Task<RoomInfo[]> GetRoomInfos()
     {
-        var result = new List<RoomInfo>();
-        foreach (var key in server.Keys(pattern: "*"))
+        var keys = server.Keys(pattern: "*");
+        var result = new RoomInfo[keys.Count()];
+        int i = 0;
+        foreach (var key in keys)
         {
             var value = await db.StringGetAsync(key);
-            var info = JsonConvert.DeserializeObject<RoomInfo>(value);
-            if (info.IsPublic)
-            {
-                result.Add(info);
-            }
+            result[i] = JsonConvert.DeserializeObject<RoomInfo>(value);
+            i++;
         }
 
-        return result.ToArray();
+        return result;
     }
 
-    public async static Task CreateRoom(string id, string name, string ownerName, bool isPublic)
+    public async static Task InsertRoomInfo(string id, string name, string ownerName, bool isPublic)
     {
         var roomInfo = new RoomInfo(id, name, ownerName, isPublic);
         var json = JsonConvert.SerializeObject(roomInfo);
         await db.StringSetAsync(id, json);
         await db.KeyExpireAsync(id, new TimeSpan(1, 0, 0, 0));
+    }
+
+    public async static Task DeleteRoomInfo(string id)
+    {
+        await db.KeyDeleteAsync(id);
     }
 }
