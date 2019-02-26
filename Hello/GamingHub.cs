@@ -108,7 +108,7 @@ namespace Hello
 
         public async Task SpeakAsync(int index, float[] segment)
         {
-            BroadcastExceptSelf(room).OnSpeak(index, segment);
+            BroadcastExceptSelf(room).OnSpeak(selfInfo.ID, index, segment);
         }
 
         protected override ValueTask OnDisconnected()
